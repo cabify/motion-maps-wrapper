@@ -1,0 +1,132 @@
+class AppleMapsViewController < UIViewController
+  attr_accessor :annotations, :mapView
+
+  def init
+    super
+    self.title = "Apple"
+    self.annotations = []
+    self
+  end
+
+  def loadView
+    self.mapView = MKMapView.alloc.init
+    self.mapView.center=([-33.868, 151.2086])
+    self.mapView.delegate = self
+
+    self.view = self.mapView
+  end
+
+  #####################
+  #### Annotations ####
+  #####################
+
+  def add_annotation(annotation)
+    self.annotations << annotation
+    self.mapView.addAnnotation(annotation)
+  end
+
+  def add_annotations(annotations)
+    self.annotations.concat(annotations)
+    self.mapView.addAnnotations(annotations)
+  end
+
+  def remove_annotation(annotation)
+    self.annotations.delete(annotation)
+    self.mapView.removeAnnotation(annotation)
+  end
+
+  def remove_annotations(annotations)
+    self.annotations = self.annotations - annotations
+    self.mapView.removeAnnotations(annotations)
+  end
+
+  def clear_annotations
+    self.mapView.removeAnnotations(self.annotations)
+    self.annotations.clear
+  end
+
+  def selected_annotations
+    # selectedAnnotations returns nil there are no annotations selected
+    self.mapView.selectedAnnotations || []
+  end
+
+  def select_annotation(annotation, animated=true)
+    self.mapView.selectAnnotation(annotation, animated:animated)
+  end
+
+  def deselect_annotation(annotation, animated=true)
+    self.mapView.deselectAnnotation(annotation, animated:animated)
+  end
+
+  def zoom_to_fit_annotations(opts = {})
+    points = self.annotations.map(&:coordinates)
+    region = Point.map_region_for(points)
+    self.region(region, opts)
+  end
+
+  def mapView(mapView, viewForAnnotation:annotation)
+    if annotation.is_a?(MKUserLocation)
+      annotation.title = nil
+      return nil # Use default location icon
+    end
+
+    identifier = annotation.identifier
+    if view = mapView.dequeueReusableAnnotationViewWithIdentifier(identifier)
+      view.annotation = annotation
+    else
+
+      view = MKAnnotationView.alloc.initWithAnnotation(annotation, reuseIdentifier:identifier)
+
+      if annotation.image
+        annotation_class = annotation.view_class || MKAnnotationView
+        view = annotation_class.alloc.initWithAnnotation(annotation, reuseIdentifier:identifier)
+        view.image = annotation.image
+      else
+        view = MKPinAnnotationView.alloc.initWithAnnotation(annotation, reuseIdentifier:identifier)
+        view.animatesDrop = annotation.animated
+        view.pinColor = annotation.pin_color
+      end
+
+      view.canShowCallout = annotation.show_callout
+      view.centerOffset = annotation.center_offset if annotation.center_offset
+    end
+    view
+  end
+
+  ##################
+  #### Position ####
+  ##################
+
+  def center
+    Point.new(self.mapView.centerCoordinate)
+  end
+
+  def center=(center, opts = {})
+    center = Point.new(center)
+    self.mapView.setCenterCoordinate(center.asCLPoint, animated:opts[:animated])
+  end
+
+  def region
+    Region.new(self.mapView.region)
+  end
+
+  def region=(region, opts = {})
+    if !region.is_a?(MKCoordinateRegion)
+      region = region.asMKCoordinateRegion
+    end
+    self.mapView.setRegion(region, animated: opts[:animated])
+  end
+
+  ##################
+  #### Tracking ####
+  ##################
+
+  def show_user_location(show_location)
+    self.mapView.showsUserLocation = show_location
+  end
+
+  ###############
+  #### Utils ####
+  ###############
+
+end
