@@ -44,7 +44,6 @@ def add_shared_maps_specs(instance)
         controller.deselect_annotation(@annotations.first)
         controller.selected_annotations.count.should == 0
       end
-
     end
 
     describe "coordinates" do
@@ -79,6 +78,28 @@ def add_shared_maps_specs(instance)
 
       end
 
+    end
+
+    describe "map view" do
+      before do
+        controller.disable_map
+        @initial_region = controller.region
+      end
+
+      it "can be enabled" do
+        controller.enable_map
+        pinch_open(controller.mapView)
+        wait 0.5 do
+          controller.region.should != @initial_region
+        end
+      end
+
+      it "can be disabled" do
+        pinch_open(controller.mapView)
+        wait 0.5 do
+          controller.region.should == @initial_region
+        end
+      end
     end
   end
 end

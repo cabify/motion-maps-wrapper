@@ -16,6 +16,11 @@ class Point
     if point.is_a?(MKUserLocation)
       point = point.location.coordinate
     end
+
+    if point.is_a?(CLLocation)
+      point = point.coordinate
+    end
+
     case point
     when Point, CLLocationCoordinate2D
       @latitude  = point.latitude.to_f
@@ -61,7 +66,7 @@ class Point
   end
 
   def ==(other)
-    if [Point, CLLocationCoordinate2D, MKUserLocation].include?(other.class)
+    if [Point, CLLocationCoordinate2D, MKUserLocation, CLLocation].include?(other.class)
       other = Point.new(other)
       ((@latitude - other.latitude).abs < 0.005) && ((@longitude - other.longitude).abs < 0.005)
     else

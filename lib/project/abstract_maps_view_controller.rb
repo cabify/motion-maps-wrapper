@@ -89,4 +89,12 @@ class AbstractMapsViewController < UIViewController
   #### Utils ####
   ###############
 
+  def enabled=(enabled)
+  end
+
+  def enable_map
+  end
+
+  def disable_map
+  end
 end

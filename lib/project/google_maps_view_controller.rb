@@ -121,4 +121,19 @@ class GoogleMapsViewController < UIViewController
   #### Utils ####
   ###############
 
+  def enabled=(enabled)
+    return enabled if @enabled == enabled
+
+    mapView.userInteractionEnabled = enabled
+
+    @enabled = enabled
+  end
+
+  def enable_map
+    self.enabled = true
+  end
+
+  def disable_map
+    self.enabled = false
+  end
 end

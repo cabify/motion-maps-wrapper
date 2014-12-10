@@ -1,5 +1,5 @@
 class AppleMapsViewController < UIViewController
-  attr_accessor :annotations, :mapView
+  attr_accessor :annotations, :mapView, :enabled
 
   def init
     super
@@ -128,5 +128,23 @@ class AppleMapsViewController < UIViewController
   ###############
   #### Utils ####
   ###############
+
+  def enabled=(enabled)
+    return enabled if @enabled == enabled
+
+    mapView.zoomEnabled = enabled
+    mapView.scrollEnabled = enabled
+    mapView.userInteractionEnabled = enabled
+
+    @enabled = enabled
+  end
+
+  def enable_map
+    self.enabled = true
+  end
+
+  def disable_map
+    self.enabled = false
+  end
 
 end

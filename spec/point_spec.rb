@@ -7,13 +7,11 @@ describe "Point" do
       point.longitude.should == coordinate.longitude
     end
 
-    it "can be initialized with a MKUserLocation" do
-      array = [40.456116, -3.671297]
-      user_location = MKUserLocation.alloc.init
-      user_location = Point.new(array).asCLLocation
-      point = Point.new(array)
-      point.latitude.should == array[0]
-      point.longitude.should == array[1]
+    it "can be initialized with CLLocation" do
+      cllocation = CLLocation.alloc.initWithLatitude(40.456116, longitude: -3.671297)
+      point = Point.new(cllocation)
+      point.latitude.should == cllocation.coordinate.latitude
+      point.longitude.should == cllocation.coordinate.longitude
     end
 
     it "can be initialized with another Point" do
@@ -34,6 +32,13 @@ describe "Point" do
     it "can be compared to a CLLocationCoordinate2D" do
       array = [40.456116, -3.671297]
       coordinate = CLLocationCoordinate2DMake(array[0], array[1])
+      point = Point.new(array)
+      point.should == coordinate
+    end
+
+    it "can be compared to a CLLocation" do
+      array = [40.456116, -3.671297]
+      coordinate = CLLocation.alloc.initWithLatitude(array[0], longitude: array[1])
       point = Point.new(array)
       point.should == coordinate
     end
