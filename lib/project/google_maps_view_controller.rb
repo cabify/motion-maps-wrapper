@@ -9,10 +9,12 @@ class GoogleMapsViewController < UIViewController
     self
   end
 
-  def loadView
+  def viewDidLoad
     camera = GMSCameraPosition.cameraWithLatitude(-33.868, longitude:151.2086, zoom:6)
-    self.mapView = GMSMapView.mapWithFrame(CGRectZero, camera:camera)
-    self.view = self.mapView
+    self.mapView = GMSMapView.mapWithFrame(self.view.frame, camera:camera)
+    self.mapView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight
+    self.mapView.delegate = self
+    self.view.addSubview(self.mapView)
   end
 
   #####################

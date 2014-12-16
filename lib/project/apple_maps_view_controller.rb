@@ -8,12 +8,12 @@ class AppleMapsViewController < UIViewController
     self
   end
 
-  def loadView
+  def viewDidLoad
     self.mapView = MKMapView.alloc.init
     self.mapView.center=([-33.868, 151.2086])
     self.mapView.delegate = self
 
-    self.view = self.mapView
+    self.view.addSubview(self.mapView)
   end
 
   #####################
