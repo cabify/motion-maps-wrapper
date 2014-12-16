@@ -84,7 +84,11 @@ class GoogleMapsViewController < UIViewController
   ##################
 
   def center
-    Point.new(self.mapView.camera.target)
+    if self.mapView.camera
+      Point.new(self.mapView.camera.target)
+    else
+      nil
+    end
   end
 
   def center=(center, opts = {})
