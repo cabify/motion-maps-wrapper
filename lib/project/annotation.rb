@@ -7,6 +7,9 @@ class MapAnnotation
                 :point,
                 :image,
 
+                # A hash containing arbitrary user information
+                :user_info,
+
                 # Apple
                 :identifier,
                 :show_callout,
