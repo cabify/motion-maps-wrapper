@@ -21,6 +21,10 @@ class GoogleMapsViewController < UIViewController
   #### Annotations ####
   #####################
 
+  def annotations
+    @annotations ||= []
+  end
+
   def add_annotation(annotation)
     annotation.mapView = self.mapView
     self.annotations << annotation

@@ -20,6 +20,10 @@ class AppleMapsViewController < UIViewController
   #### Annotations ####
   #####################
 
+  def annotations
+    @annotations ||= []
+  end
+
   def add_annotation(annotation)
     self.annotations << annotation
     self.mapView.addAnnotation(annotation)
