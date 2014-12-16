@@ -94,6 +94,23 @@ describe "Region" do
       coordinate_bounds2.southWest.latitude.should == @coordinate_bounds.southWest.latitude
       coordinate_bounds2.southWest.longitude.should == @coordinate_bounds.southWest.longitude
     end
+
+    it "can convert into bounds with latitude, longitude and center span" do
+      region = Region.new(
+        points: [Point.new([40, 5]), Point.new([41, 6])],
+        lat_factor: 1.5,
+        center_factor: 1.5)
+      region.as_bounds.should == [Point.new([42,6]), Point.new([40.5,5])]
+    end
+
+    it "can convert into center and span with latitude, longitude and span" do
+      region = Region.new(
+        points: [Point.new([38,3]), Point.new([42,7])],
+        lat_factor:1.5,
+        center_factor:1.5)
+      region.as_center_and_span.should == [Point.new([43,5]), [6,4]]
+    end
+
   end
 
 end
