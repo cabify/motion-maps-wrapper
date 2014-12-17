@@ -1,17 +1,10 @@
+# class GoogleMapsViewController < ProMotion::ViewController
 class GoogleMapsViewController < UIViewController
 
   attr_accessor :annotations, :mapView
 
-  def init
-    super
-    self.title = "Google"
-    self.annotations = []
-    self
-  end
-
   def viewDidLoad
-    camera = GMSCameraPosition.cameraWithLatitude(-33.868, longitude:151.2086, zoom:6)
-    self.mapView = GMSMapView.mapWithFrame(self.view.frame, camera:camera)
+    self.mapView = GMSMapView.mapWithFrame(self.view.frame, camera:nil)
     self.mapView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight
     self.mapView.delegate = self
     self.view.addSubview(self.mapView)
@@ -83,15 +76,12 @@ class GoogleMapsViewController < UIViewController
   #### Position ####
   ##################
 
-  def center
-    if self.mapView.camera
-      Point.new(self.mapView.camera.target)
-    else
-      nil
+  def center(center=nil, opts = {})
+    if center.nil?
+      camera = self.mapView.camera
+      return (camera ? Point.new(camera.target) : nil)
     end
-  end
 
-  def center=(center, opts = {})
     point = Point.new(center).asCLPoint
     camera_update = GMSCameraUpdate.setTarget(point)
     if opts[:animated]
@@ -101,11 +91,11 @@ class GoogleMapsViewController < UIViewController
     end
   end
 
-  def region
-    Region.new(self.mapView.projection.visibleRegion)
-  end
+  def region(region=nil, opts = {})
+    if region.nil?
+      return Region.new(self.mapView.projection.visibleRegion)
+    end
 
-  def region=(region, opts = {})
     region = Region.new(region)
 
     opts[:insets] ||= [0,0,0,0]
@@ -131,7 +121,7 @@ class GoogleMapsViewController < UIViewController
   #### Utils ####
   ###############
 
-  def enabled=(enabled)
+  def enabled(enabled)
     return enabled if @enabled == enabled
 
     mapView.userInteractionEnabled = enabled
@@ -140,10 +130,10 @@ class GoogleMapsViewController < UIViewController
   end
 
   def enable_map
-    self.enabled = true
+    self.enabled(true)
   end
 
   def disable_map
-    self.enabled = false
+    self.enabled(false)
   end
 end

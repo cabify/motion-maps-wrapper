@@ -50,7 +50,7 @@ def add_shared_maps_specs(instance)
 
       it "can set the center of the map" do
         point = Point.new([40.417217, -3.703539])
-        controller.center=(point)
+        controller.center(point)
         controller.center.equals?(point).should == true
       end
 
@@ -62,7 +62,7 @@ def add_shared_maps_specs(instance)
           [40.385350, -3.723955]
         ]
         region = Region.new(points: points)
-        controller.region=(region)
+        controller.region(region)
 
         if controller.is_a?(AppleMapsViewController)
           # When setting a new region, the map adjusts the values to fit the visible area of the map

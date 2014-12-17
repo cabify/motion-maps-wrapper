@@ -1,16 +1,9 @@
 class AppleMapsViewController < UIViewController
   attr_accessor :annotations, :mapView, :enabled
 
-  def init
-    super
-    self.title = "Apple"
-    self.annotations = []
-    self
-  end
-
   def viewDidLoad
-    self.mapView = MKMapView.alloc.init
-    self.mapView.center=([-33.868, 151.2086])
+    self.mapView = MKMapView.alloc.initWithFrame(self.view.frame)
+    self.mapView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight
     self.mapView.delegate = self
 
     self.view.addSubview(self.mapView)
@@ -101,20 +94,20 @@ class AppleMapsViewController < UIViewController
   #### Position ####
   ##################
 
-  def center
-    Point.new(self.mapView.centerCoordinate)
-  end
+  def center(center=nil, opts = {})
+    if center.nil?
+      return Point.new(self.mapView.centerCoordinate)
+    end
 
-  def center=(center, opts = {})
     center = Point.new(center)
     self.mapView.setCenterCoordinate(center.asCLPoint, animated:opts[:animated])
   end
 
-  def region
-    Region.new(self.mapView.region)
-  end
+  def region(region=nil, opts = {})
+    if region.nil?
+      return Region.new(self.mapView.region)
+    end
 
-  def region=(region, opts = {})
     if !region.is_a?(MKCoordinateRegion)
       region = region.asMKCoordinateRegion
     end
@@ -133,7 +126,7 @@ class AppleMapsViewController < UIViewController
   #### Utils ####
   ###############
 
-  def enabled=(enabled)
+  def enabled(enabled)
     return enabled if @enabled == enabled
 
     mapView.zoomEnabled = enabled
@@ -144,11 +137,11 @@ class AppleMapsViewController < UIViewController
   end
 
   def enable_map
-    self.enabled = true
+    self.enabled(true)
   end
 
   def disable_map
-    self.enabled = false
+    self.enabled(false)
   end
 
 end

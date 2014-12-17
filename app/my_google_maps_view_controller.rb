@@ -1,5 +1,13 @@
 class MyGoogleMapsViewController < GoogleMapsViewController
+
+  def init
+    super
+    self.title = 'Google'
+    self
+  end
+
   def viewDidAppear(animated)
+
     point = Point.new([40.4188, -3.7002])
 
     annotation = MapAnnotation.new(image: UIImage.imageNamed('lite_27'),
@@ -10,6 +18,6 @@ class MyGoogleMapsViewController < GoogleMapsViewController
                                   )
 
     self.add_annotation(annotation)
-    self.center=(point)
+    self.center(point)
   end
 end
