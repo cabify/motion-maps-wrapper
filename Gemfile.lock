@@ -45,6 +45,7 @@ GEM
     json_pure (1.8.1)
     motion-cocoapods (1.7.0)
       cocoapods (>= 0.34)
+    motion-stump (0.3.2)
     multi_json (1.10.1)
     nap (0.8.0)
     netrc (0.7.8)
@@ -59,4 +60,5 @@ PLATFORMS
 
 DEPENDENCIES
   motion-maps-wrapper!
+  motion-stump
   rake

@@ -1,6 +1,6 @@
 class AppDelegate
   def application(application, didFinishLaunchingWithOptions:launchOptions)
-    GMSServices.provideAPIKey("AIzaSyCIA5qrvpVGaR6o0t_Vy96SeQLrieRiUQk")
+    GMSServices.provideAPIKey(NSBundle.mainBundle.infoDictionary["google_maps_api_key"])
     return true if RUBYMOTION_ENV == 'test'
 
     @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)

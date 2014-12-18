@@ -18,6 +18,7 @@ class MyGoogleMapsViewController < GoogleMapsViewController
                                   )
 
     self.add_annotation(annotation)
+    puts "viewDidAppear"
     self.center(point)
   end
 end

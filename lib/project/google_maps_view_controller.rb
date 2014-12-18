@@ -85,8 +85,10 @@ class GoogleMapsViewController < UIViewController
     point = Point.new(center).asCLPoint
     camera_update = GMSCameraUpdate.setTarget(point)
     if opts[:animated]
+      @_map_moving_animated = true
       self.mapView.animateWithCameraUpdate(camera_update)
     else
+      @_map_moving_animated = false
       self.mapView.moveCamera(camera_update)
     end
   end
@@ -103,8 +105,10 @@ class GoogleMapsViewController < UIViewController
     camera = self.mapView.cameraForBounds(region.asGMSCoordinateBounds, insets:insets)
 
     if opts[:animated]
+      @_map_moving_animated = true
       self.mapView.animateToCameraPosition(camera)
     else
+      @_map_moving_animated = false
       self.mapView.camera = camera
     end
   end
@@ -115,6 +119,36 @@ class GoogleMapsViewController < UIViewController
 
   def show_user_location(show_location)
     self.mapView.myLocationEnabled = show_location
+  end
+
+  # @param [Hash] opts
+  # @option opts [Boolean] :animated true if the movement is animated
+  # @option opts [Boolean] :gesture true if the movement was originated by user interaction
+  def map_will_move(opts = {})
+  end
+
+  # @param [Hash] opts
+  # @option opts [Boolean] :animated true if the movement is animated
+  # @option opts [Boolean] :gesture ttrue if the movement was originated by user interaction
+  # @option opts [Point] :position the center position of the map after the movement finishes
+  def map_did_move(opts = {})
+  end
+
+  # Called before the camera on the map changes, either due to a gesture, animation or by being updated explicitly via the camera
+  def mapView(mapView, willMove:isGesture)
+    # puts "willMove: isGesture:#{isGesture}"
+    @_map_moving_with_gesture = isGesture
+    map_will_move animated: @_map_moving_animated || false,
+                  gesture:  isGesture
+  end
+
+  # Called when the map becomes idle, after any outstanding gestures or animations have completed (or after the camera has been explicitly set).
+  def mapView(mapView, idleAtCameraPosition:position)
+    # puts "idleAtCameraPosition"
+    map_did_move animated: @_map_moving_animated || false,
+                 gesture:  @_map_moving_with_gesture || false,
+                 position: Point.new(position.target)
+    @_map_moving_animated = false
   end
 
   ###############

@@ -1,3 +1,4 @@
+# class AppleMapsViewController < ProMotion::ViewController
 class AppleMapsViewController < UIViewController
   attr_accessor :annotations, :mapView, :enabled
 
@@ -120,6 +121,48 @@ class AppleMapsViewController < UIViewController
 
   def show_user_location(show_location)
     self.mapView.showsUserLocation = show_location
+  end
+
+  # @param [Hash] opts
+  # @option opts [Boolean] :animated true if the movement is animated
+  # @option opts [Boolean] :gesture true if the movement was originated by user interaction
+  def map_will_move(opts = {})
+  end
+
+  # @param [Hash] opts
+  # @option opts [Boolean] :animated true if the movement is animated
+  # @option opts [Boolean] :gesture ttrue if the movement was originated by user interaction
+  # @option opts [Point] :position the center position of the map after the movement finishes
+  def map_did_move(opts = {})
+  end
+
+  # Called repeatedly during any animations or gestures on the map (or once, if the camera is explicitly set)
+  def mapView(mapView, regionWillChangeAnimated:animated)
+    # puts "regionWillChangeAnimated: #{animated}"
+    @_map_moving_with_gesture = mapViewRegionDidChangeFromUserInteraction
+    map_will_move animated: animated,
+                  gesture: @_map_moving_with_gesture
+  end
+
+  def mapView(mapView, regionDidChangeAnimated:animated)
+    # puts "regionDidChangeAnimated: #{animated}"
+    map_did_move animated: animated,
+                 gesture:  @_map_moving_with_gesture,
+                 position: center
+    @_map_moving_with_gesture = false
+  end
+
+  ##################
+  #### Gestures ####
+  ##################
+
+  def mapViewRegionDidChangeFromUserInteraction
+    view = self.mapView.subviews.first
+    #  Look through gesture recognizers to determine whether this region change is from user interaction
+    view.gestureRecognizers.each do |recognizer|
+      return true if recognizer.state == UIGestureRecognizerStateBegan
+    end
+    false
   end
 
   ###############

@@ -50,7 +50,7 @@ class MapAnnotation
       marker.icon = self.image
 
       # observe(self, :coordinate) do |old_coordinate, new_coordinate|
-      #   marker.position = new_coordinate
+      #   marker.position = new_coordinate.MKCoordinateValue
       # end
 
       marker
