@@ -7,6 +7,10 @@ class AppleMapsViewController < UIViewController
     self.mapView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight
     self.mapView.delegate = self
 
+    pan = UIPanGestureRecognizer.alloc.initWithTarget(self, action: 'handle_gesture_recognizer:')
+    pan.delegate = self
+    self.mapView.addGestureRecognizer(pan)
+
     self.view.addSubview(self.mapView)
   end
 
@@ -127,6 +131,16 @@ class AppleMapsViewController < UIViewController
   # @option opts [Boolean] :animated true if the movement is animated
   # @option opts [Boolean] :gesture true if the movement was originated by user interaction
   def map_will_move(opts = {})
+    # puts "map_will_move #{opts}"
+  end
+
+  # NOTE: For MKMapView, this is only called when the map is moving because of a gesture recognizer, not an animated change.
+  # @param [Hash] opts
+  # @option opts [Boolean] :animated true if the movement is animated
+  # @option opts [Boolean] :gesture true if the movement was originated by user interaction
+  # @option opts [Point] :position the center position of the map after the movement finishes
+  def map_is_moving(opts = {})
+    # puts "map_is_moving #{opts}"
   end
 
   # @param [Hash] opts
@@ -134,18 +148,17 @@ class AppleMapsViewController < UIViewController
   # @option opts [Boolean] :gesture ttrue if the movement was originated by user interaction
   # @option opts [Point] :position the center position of the map after the movement finishes
   def map_did_move(opts = {})
+    # puts "map_did_move #{opts}"
   end
 
   # Called repeatedly during any animations or gestures on the map (or once, if the camera is explicitly set)
   def mapView(mapView, regionWillChangeAnimated:animated)
-    # puts "regionWillChangeAnimated: #{animated}"
     @_map_moving_with_gesture = mapViewRegionDidChangeFromUserInteraction
     map_will_move animated: animated,
                   gesture: @_map_moving_with_gesture
   end
 
   def mapView(mapView, regionDidChangeAnimated:animated)
-    # puts "regionDidChangeAnimated: #{animated}"
     map_did_move animated: animated,
                  gesture:  @_map_moving_with_gesture,
                  position: center
@@ -155,6 +168,20 @@ class AppleMapsViewController < UIViewController
   ##################
   #### Gestures ####
   ##################
+
+  def handle_gesture_recognizer(gesture_recognizer)
+    case gesture_recognizer.state
+    when UIGestureRecognizerStateBegan
+    when UIGestureRecognizerStateChanged
+      map_is_moving animated: false,
+                    gesture:  true,
+                    position: center
+    end
+  end
+
+  def gestureRecognizer(gestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer: otherGestureRecognizer)
+    true
+  end
 
   def mapViewRegionDidChangeFromUserInteraction
     view = self.mapView.subviews.first
