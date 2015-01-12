@@ -52,7 +52,7 @@ class Region
   end
 
   def span
-    @span || [0.005, 0.0065]
+    @span || [0.005, 0.005]
   end
 
   def as_bounds
