@@ -207,6 +207,10 @@ def add_shared_maps_specs(instance)
           controller.region.should == @initial_region
         end
       end
+
+      it "can find the logo view" do
+        controller.maps_logo_view.should != nil
+      end
     end
   end
 end

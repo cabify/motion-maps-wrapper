@@ -214,4 +214,8 @@ class AppleMapsViewController < UIViewController
     self.enabled(false)
   end
 
+  def maps_logo_view
+    mapView.subviews.find{|v| v.is_a?(UILabel)}
+  end
+
 end

@@ -186,4 +186,11 @@ class GoogleMapsViewController < UIViewController
   def disable_map
     self.enabled(false)
   end
+
+  def maps_logo_view
+    settings_view = self.mapView.subviews.find { |v| v.is_a?(GMSUISettingsView) }
+    return nil if !settings_view
+    settings_view.subviews.find { |v| v.is_a?(UIButton) && v.accessibilityLabel == "Google Maps" }
+  end
+
 end
