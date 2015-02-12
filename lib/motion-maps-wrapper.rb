@@ -12,7 +12,7 @@ Motion::Project::App.setup do |app|
   app.frameworks << 'MapKit'
 
   app.pods do
-    pod 'Google-Maps-iOS-SDK', '1.9.0'
+    pod 'Google-Maps-iOS-SDK'
   end
 
 end
