@@ -1,6 +1,4 @@
 class MapAnnotation
-  # include BW::KVO
-
   attr_accessor :title,
                 :subtitle,
                 :animated,
@@ -34,6 +32,7 @@ class MapAnnotation
   def setCoordinate(coordinate)
     willChangeValueForKey("coordinate")
     self.point.set(coordinate)
+    @GMSMarker.position = coordinate if @GMSMarker
     didChangeValueForKey("coordinate")
   end
 
@@ -48,11 +47,6 @@ class MapAnnotation
       marker.title = self.title
       marker.appearAnimation = KGMSMarkerAnimationPop if self.animated
       marker.icon = self.image
-
-      # observe(self, :coordinate) do |old_coordinate, new_coordinate|
-      #   marker.position = new_coordinate.MKCoordinateValue
-      # end
-
       marker
     end
   end
