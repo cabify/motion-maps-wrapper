@@ -1,5 +1,4 @@
-# class AppleMapsViewController < ProMotion::ViewController
-class AppleMapsViewController < UIViewController
+module AppleMapsViewController
   attr_accessor :annotations, :mapView, :enabled
 
   def viewDidLoad

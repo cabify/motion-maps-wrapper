@@ -1,4 +1,5 @@
-class MyAppleMapsViewController < AppleMapsViewController
+class MyAppleMapsViewController < UIViewController
+  include AppleMapsViewController
 
   def init
     super

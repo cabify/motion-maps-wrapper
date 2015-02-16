@@ -1,4 +1,5 @@
-class MyGoogleMapsViewController < GoogleMapsViewController
+class MyGoogleMapsViewController < UIViewController
+  include GoogleMapsViewController
 
   def init
     super

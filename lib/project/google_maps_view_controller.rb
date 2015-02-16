@@ -1,5 +1,4 @@
-# class GoogleMapsViewController < ProMotion::ViewController
-class GoogleMapsViewController < UIViewController
+module GoogleMapsViewController
 
   attr_accessor :annotations, :mapView
 

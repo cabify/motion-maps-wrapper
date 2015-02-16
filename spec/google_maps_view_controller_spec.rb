@@ -1,4 +1,4 @@
 describe "GooleMapsViewController" do
-  tests GoogleMapsViewController
+  tests MyGoogleMapsViewController
   add_shared_maps_specs(self)
 end

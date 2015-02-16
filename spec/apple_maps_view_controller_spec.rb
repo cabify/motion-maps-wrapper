@@ -1,4 +1,4 @@
 describe "AppleMapsViewController" do
-  tests AppleMapsViewController
+  tests MyAppleMapsViewController
   add_shared_maps_specs(self)
 end
