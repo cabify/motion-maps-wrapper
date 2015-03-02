@@ -10,9 +10,4 @@ Motion::Project::App.setup do |app|
   app.files.unshift(Dir.glob(File.join(lib_dir_path, "project/**/*.rb")))
 
   app.frameworks << 'MapKit'
-
-  app.pods do
-    pod 'Google-Maps-iOS-SDK'
-  end
-
 end

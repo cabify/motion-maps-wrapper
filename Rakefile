@@ -17,4 +17,8 @@ Motion::Project::App.setup do |app|
   app.codesign_certificate = ENV['WILDCARD_CERTIFICATE']
   app.provisioning_profile = ENV['WILDCARD_PROVISIONING_PROFILE_PATH']
   app.deployment_target = '7.0'
+
+  app.pods do
+    pod 'Google-Maps-iOS-SDK'
+  end
 end
