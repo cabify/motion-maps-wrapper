@@ -19,12 +19,12 @@ class Region
         region.span.latitudeDelta,
         region.span.longitudeDelta
       ]
-    elsif region.is_a?(GMSCoordinateBounds)
+    elsif Object.const_defined?("GMSMapView") && region.is_a?(GMSCoordinateBounds)
       self.points = [
         Point.new(region.northEast),
         Point.new(region.southWest)
       ]
-    elsif region.is_a?(GMSVisibleRegion)
+    elsif Object.const_defined?("GMSMapView") && region.is_a?(GMSVisibleRegion)
       self.points = [
         Point.new(region.farRight),
         Point.new(region.nearLeft)
@@ -141,7 +141,7 @@ class Region
   end
 
   def ==(region)
-    if [Region, MKCoordinateRegion, GMSCoordinateBounds, GMSVisibleRegion].include?(region.class)
+    if [Region, MKCoordinateRegion].concat(google_maps_classes).include?(region.class)
       region = Region.new(region)
       self.as_bounds == region.as_bounds
     else
@@ -151,4 +151,13 @@ class Region
   alias :eql? :==
   alias :equals? :==
 
+  protected
+
+  def google_maps_classes
+    @@google_maps_classes ||= if const_defined?("GMSMapView")
+      [GMSCoordinateBounds, GMSVisibleRegion]
+    else
+      []
+    end
+  end
 end
