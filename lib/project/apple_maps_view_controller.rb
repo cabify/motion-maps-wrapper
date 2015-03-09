@@ -85,7 +85,7 @@ module AppleMapsViewController
       else
         view = MKPinAnnotationView.alloc.initWithAnnotation(annotation, reuseIdentifier:identifier)
         view.animatesDrop = annotation.animated
-        view.pinColor = annotation.pin_color
+        view.pinColor = annotation.pin_color if annotation.pin_color
       end
 
       view.canShowCallout = annotation.show_callout
