@@ -13,6 +13,7 @@ class MapAnnotation
                 :show_callout,
                 :center_offset,
                 :view_class,
+                :pin_color,
 
                 # Google
                 :info_window_view,
