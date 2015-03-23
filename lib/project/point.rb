@@ -14,7 +14,7 @@ class Point
 
   def set(point)
     if point.is_a?(MKUserLocation)
-      point = point.location.coordinate
+      point = point.location.coordinate if point.location
     end
 
     if point.is_a?(CLLocation)
