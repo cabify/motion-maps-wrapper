@@ -72,7 +72,9 @@ module AppleMapsViewController
     end
 
     identifier = annotation.identifier
-    if view = mapView.dequeueReusableAnnotationViewWithIdentifier(identifier)
+    if annotation.annotation_view
+      view = annotation.annotation_view
+    elsif view = mapView.dequeueReusableAnnotationViewWithIdentifier(identifier)
       view.annotation = annotation
     else
 
@@ -90,6 +92,8 @@ module AppleMapsViewController
 
       view.canShowCallout = annotation.show_callout
       view.centerOffset = annotation.center_offset if annotation.center_offset
+
+      view.subview(annotation.info_window_view) if annotation.info_window_view
     end
     view
   end

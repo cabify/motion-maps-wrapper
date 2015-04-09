@@ -20,6 +20,7 @@ module GoogleMapsViewController
   def add_annotation(annotation)
     annotation.mapView = self.mapView
     self.annotations << annotation
+    annotation
   end
 
   def add_annotations(annotations)
@@ -64,7 +65,8 @@ module GoogleMapsViewController
   end
 
   def mapView(mapView, markerInfoWindow:marker)
-    marker.info_window_view if marker.respond_to?("info_window_view")
+    annotation = self.annotations.find { |a| a.GMSMarker == marker }
+    annotation.info_window_view if annotation.respond_to?("info_window_view")
   end
 
   def mapView(mapView, markerInfoContents:marker)

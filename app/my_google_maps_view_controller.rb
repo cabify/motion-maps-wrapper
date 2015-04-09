@@ -15,7 +15,7 @@ class MyGoogleMapsViewController < UIViewController
                                    point: point,
                                    title: "300km",
                                    subtitle: "subtitle",
-                                   show_callout: true
+                                   show_callout: true,
                                   )
 
     self.add_annotation(annotation)

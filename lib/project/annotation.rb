@@ -14,6 +14,7 @@ class MapAnnotation
                 :center_offset,
                 :view_class,
                 :pin_color,
+                :annotation_view,
 
                 # Google
                 :info_window_view,
@@ -21,6 +22,10 @@ class MapAnnotation
 
   def initialize(opts = {})
     @point = Point.new
+    set(opts)
+  end
+
+  def set(opts)
     opts.each do |k,v|
       self.send("#{k}=",v)
     end
