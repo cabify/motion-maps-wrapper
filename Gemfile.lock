@@ -2,7 +2,6 @@ PATH
   remote: .
   specs:
     motion-maps-wrapper (1.0)
-      motion-cocoapods
 
 GEM
   remote: https://rubygems.org/
@@ -59,6 +58,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  motion-cocoapods
   motion-maps-wrapper!
   motion-stump
   rake

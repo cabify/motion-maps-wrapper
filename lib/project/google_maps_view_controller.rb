@@ -139,7 +139,7 @@ module GoogleMapsViewController
 
   # @param [Hash] opts
   # @option opts [Boolean] :animated true if the movement is animated
-  # @option opts [Boolean] :gesture ttrue if the movement was originated by user interaction
+  # @option opts [Boolean] :gesture true if the movement was originated by user interaction
   # @option opts [Point] :position the center position of the map after the movement finishes
   def map_did_move(opts = {})
     # puts "map_did_move #{opts}"
