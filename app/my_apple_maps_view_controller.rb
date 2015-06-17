@@ -1,10 +1,19 @@
 class MyAppleMapsViewController < UIViewController
-  include AppleMapsViewController
+
+  attr_accessor :map
 
   def init
     super
     self.title = 'Apple'
     self
+  end
+
+  def viewDidLoad
+    self.map = AppleMap.new
+    map.view.frame = self.view.frame
+    map.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight
+    map.delegate = self
+    self.view.addSubview(map.view)
   end
 
   def viewDidAppear(animated)
@@ -17,7 +26,8 @@ class MyAppleMapsViewController < UIViewController
                                    show_callout: true
                                   )
 
-    self.add_annotation(@annotation)
-    self.center(point)
+    self.map.add_annotation(@annotation)
+    self.map.center(point)
   end
+
 end

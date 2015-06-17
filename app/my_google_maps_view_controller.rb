@@ -1,10 +1,18 @@
 class MyGoogleMapsViewController < UIViewController
-  include GoogleMapsViewController
+
+  attr_accessor :map
 
   def init
     super
     self.title = 'Google'
     self
+  end
+
+  def viewDidLoad
+    self.map = GoogleMap.new
+    map.view.frame = self.view.frame
+    map.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight
+    self.view.addSubview(map.view)
   end
 
   def viewDidAppear(animated)
@@ -18,8 +26,8 @@ class MyGoogleMapsViewController < UIViewController
                                    show_callout: true,
                                   )
 
-    self.add_annotation(annotation)
+    self.map.add_annotation(annotation)
     puts "viewDidAppear"
-    self.center(point)
+    self.map.center(point)
   end
 end

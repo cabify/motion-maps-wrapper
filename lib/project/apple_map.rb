@@ -1,16 +1,20 @@
-module AppleMapsViewController
-  attr_accessor :annotations, :mapView, :enabled
+class AppleMap
 
-  def viewDidLoad
-    self.mapView = MKMapView.alloc.initWithFrame(self.view.frame)
-    self.mapView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight
-    self.mapView.delegate = self
+  attr_accessor :annotations, :view, :enabled, :delegate
+
+  def initialize
+    self.view = MKMapView.alloc.initWithFrame(CGRectZero)
+    self.view.delegate = self
 
     pan = UIPanGestureRecognizer.alloc.initWithTarget(self, action: 'handle_gesture_recognizer:')
     pan.delegate = self
-    self.mapView.addGestureRecognizer(pan)
+    self.view.addGestureRecognizer(pan)
 
-    self.view.addSubview(self.mapView)
+    self
+  end
+
+  def delegate=(delegate)
+    @delegate = WeakRef.new(delegate)
   end
 
   #####################
@@ -23,40 +27,40 @@ module AppleMapsViewController
 
   def add_annotation(annotation)
     self.annotations << annotation
-    self.mapView.addAnnotation(annotation)
+    self.view.addAnnotation(annotation)
   end
 
   def add_annotations(annotations)
     self.annotations.concat(annotations)
-    self.mapView.addAnnotations(annotations)
+    self.view.addAnnotations(annotations)
   end
 
   def remove_annotation(annotation)
     self.annotations.delete(annotation)
-    self.mapView.removeAnnotation(annotation)
+    self.view.removeAnnotation(annotation)
   end
 
   def remove_annotations(annotations)
     self.annotations = self.annotations - annotations
-    self.mapView.removeAnnotations(annotations)
+    self.view.removeAnnotations(annotations)
   end
 
   def clear_annotations
-    self.mapView.removeAnnotations(self.annotations)
+    self.view.removeAnnotations(self.annotations)
     self.annotations.clear
   end
 
   def selected_annotations
     # selectedAnnotations returns nil there are no annotations selected
-    self.mapView.selectedAnnotations || []
+    self.view.selectedAnnotations || []
   end
 
   def select_annotation(annotation, animated=true)
-    self.mapView.selectAnnotation(annotation, animated:animated)
+    self.view.selectAnnotation(annotation, animated:animated)
   end
 
   def deselect_annotation(annotation, animated=true)
-    self.mapView.deselectAnnotation(annotation, animated:animated)
+    self.view.deselectAnnotation(annotation, animated:animated)
   end
 
   def zoom_to_fit_annotations(opts = {})
@@ -65,7 +69,7 @@ module AppleMapsViewController
     self.region(region, opts)
   end
 
-  def mapView(mapView, viewForAnnotation:annotation)
+  def mapView(map_view, viewForAnnotation:annotation)
     if annotation.is_a?(MKUserLocation)
       annotation.title = nil
       return nil # Use default location icon
@@ -73,29 +77,29 @@ module AppleMapsViewController
 
     identifier = annotation.identifier
     if annotation.annotation_view
-      view = annotation.annotation_view
-    elsif view = mapView.dequeueReusableAnnotationViewWithIdentifier(identifier)
-      view.annotation = annotation
+      annotaion_view = annotation.annotation_view
+    elsif annotaion_view = view.dequeueReusableAnnotationViewWithIdentifier(identifier)
+      annotation_view.annotation = annotation
     else
 
-      view = MKAnnotationView.alloc.initWithAnnotation(annotation, reuseIdentifier:identifier)
+      annotation_view = MKAnnotationView.alloc.initWithAnnotation(annotation, reuseIdentifier:identifier)
 
       if annotation.image
         annotation_class = annotation.view_class || MKAnnotationView
-        view = annotation_class.alloc.initWithAnnotation(annotation, reuseIdentifier:identifier)
-        view.image = annotation.image
+        annotation_view = annotation_class.alloc.initWithAnnotation(annotation, reuseIdentifier:identifier)
+        annotation_view.image = annotation.image
       else
-        view = MKPinAnnotationView.alloc.initWithAnnotation(annotation, reuseIdentifier:identifier)
-        view.animatesDrop = annotation.animated
-        view.pinColor = annotation.pin_color if annotation.pin_color
+        annotation_view = MKPinAnnotationView.alloc.initWithAnnotation(annotation, reuseIdentifier:identifier)
+        annotation_view.animatesDrop = annotation.animated
+        annotation_view.pinColor = annotation.pin_color if annotation.pin_color
       end
 
-      view.canShowCallout = annotation.show_callout
-      view.centerOffset = annotation.center_offset if annotation.center_offset
+      annotation_view.canShowCallout = annotation.show_callout
+      annotation_view.centerOffset = annotation.center_offset if annotation.center_offset
 
-      view.subview(annotation.info_window_view) if annotation.info_window_view
+      annotation_view.subview(annotation.info_window_view) if annotation.info_window_view
     end
-    view
+    annotation_view
   end
 
   ##################
@@ -104,22 +108,22 @@ module AppleMapsViewController
 
   def center(center=nil, opts = {})
     if center.nil?
-      return Point.new(self.mapView.centerCoordinate)
+      return Point.new(self.view.centerCoordinate)
     end
 
     center = Point.new(center)
-    self.mapView.setCenterCoordinate(center.asCLPoint, animated:opts[:animated])
+    self.view.setCenterCoordinate(center.asCLPoint, animated:opts[:animated])
   end
 
   def region(region=nil, opts = {})
     if region.nil?
-      return Region.new(self.mapView.region)
+      return Region.new(self.view.region)
     end
 
     if !region.is_a?(MKCoordinateRegion)
       region = region.asMKCoordinateRegion
     end
-    self.mapView.setRegion(region, animated: opts[:animated])
+    self.view.setRegion(region, animated: opts[:animated])
   end
 
   ##################
@@ -127,7 +131,7 @@ module AppleMapsViewController
   ##################
 
   def show_user_location(show_location)
-    self.mapView.showsUserLocation = show_location
+    self.view.showsUserLocation = show_location
   end
 
   # @param [Hash] opts
@@ -155,17 +159,21 @@ module AppleMapsViewController
   end
 
   # Called repeatedly during any animations or gestures on the map (or once, if the camera is explicitly set)
-  def mapView(mapView, regionWillChangeAnimated:animated)
+  def mapView(map_view, regionWillChangeAnimated:animated)
     @_map_moving_with_gesture = mapViewRegionDidChangeFromUserInteraction
-    map_will_move animated: animated,
-                  gesture: @_map_moving_with_gesture
+    if delegate && delegate.respond_to?('map_will_move')
+      delegate.map_will_move animated: animated,
+                             gesture: @_map_moving_with_gesture
+    end
   end
 
-  def mapView(mapView, regionDidChangeAnimated:animated)
-    map_did_move animated: animated,
-                 gesture:  @_map_moving_with_gesture,
-                 position: center
-    @_map_moving_with_gesture = false
+  def mapView(map_view, regionDidChangeAnimated:animated)
+    if delegate && delegate.respond_to?('map_did_move')
+      delegate.map_did_move animated: animated,
+                            gesture:  @_map_moving_with_gesture,
+                            position: center
+    end
+      @_map_moving_with_gesture = false
   end
 
   ##################
@@ -187,7 +195,7 @@ module AppleMapsViewController
   end
 
   def mapViewRegionDidChangeFromUserInteraction
-    view = self.mapView.subviews.first
+    view = self.view.subviews.first
     #  Look through gesture recognizers to determine whether this region change is from user interaction
     view.gestureRecognizers.each do |recognizer|
       return true if recognizer.state == UIGestureRecognizerStateBegan
@@ -199,26 +207,26 @@ module AppleMapsViewController
   #### Utils ####
   ###############
 
-  def enabled(enabled)
+  def enabled=(enabled)
     return enabled if @enabled == enabled
 
-    mapView.zoomEnabled = enabled
-    mapView.scrollEnabled = enabled
-    mapView.userInteractionEnabled = enabled
+    view.zoomEnabled = enabled
+    view.scrollEnabled = enabled
+    view.userInteractionEnabled = enabled
 
     @enabled = enabled
   end
 
   def enable_map
-    self.enabled(true)
+    self.enabled = true
   end
 
   def disable_map
-    self.enabled(false)
+    self.enabled = false
   end
 
   def maps_logo_view
-    mapView.subviews.find{|v| v.is_a?(UILabel)}
+    view.subviews.find{|v| v.is_a?(UILabel)}
   end
 
 end

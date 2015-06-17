@@ -154,7 +154,7 @@ class Region
   protected
 
   def google_maps_classes
-    @@google_maps_classes ||= if const_defined?("GMSMapView")
+    @@google_maps_classes ||= if Object.const_defined?("GMSMapView")
       [GMSCoordinateBounds, GMSVisibleRegion]
     else
       []

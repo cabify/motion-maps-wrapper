@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-VERSION = "1.0"
+VERSION = "0.0.2"
 
 Gem::Specification.new do |spec|
   spec.name          = "motion-maps-wrapper"

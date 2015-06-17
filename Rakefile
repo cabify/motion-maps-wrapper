@@ -22,3 +22,7 @@ Motion::Project::App.setup do |app|
     pod 'Google-Maps-iOS-SDK'
   end
 end
+
+task :"clean:vendor" do
+  App.config.vendor_projects.each { |vendor| vendor.clean(App.config.platforms) }
+end
