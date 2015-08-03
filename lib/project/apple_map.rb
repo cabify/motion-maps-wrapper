@@ -77,8 +77,8 @@ class AppleMap
 
     identifier = annotation.identifier
     if annotation.annotation_view
-      annotaion_view = annotation.annotation_view
-    elsif annotaion_view = view.dequeueReusableAnnotationViewWithIdentifier(identifier)
+      annotation_view = annotation.annotation_view
+    elsif annotation_view = view.dequeueReusableAnnotationViewWithIdentifier(identifier)
       annotation_view.annotation = annotation
     else
 
