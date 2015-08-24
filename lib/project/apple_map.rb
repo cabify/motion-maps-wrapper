@@ -123,7 +123,20 @@ class AppleMap
     if !region.is_a?(MKCoordinateRegion)
       region = region.asMKCoordinateRegion
     end
-    self.view.setRegion(region, animated: opts[:animated])
+
+    if opts[:insets]
+      # Convert MKCoordinateRegion to MKMapRect
+      a = MKMapPointForCoordinate(CLLocationCoordinate2DMake(
+          region.center.latitude + region.span.latitudeDelta / 2,
+          region.center.longitude - region.span.longitudeDelta / 2))
+      b = MKMapPointForCoordinate(CLLocationCoordinate2DMake(
+          region.center.latitude - region.span.latitudeDelta / 2,
+          region.center.longitude + region.span.longitudeDelta / 2))
+      map_rect = MKMapRectMake([a.x,b.x].min, [a.y,b.y].min, (a.x-b.x).abs, (a.y-b.y).abs)
+      self.view.setVisibleMapRect(map_rect, edgePadding: UIEdgeInsetsMake(*opts[:insets]), animated:opts[:animated])
+    else
+      self.view.setRegion(region, animated: opts[:animated])
+    end
   end
 
   ##################
