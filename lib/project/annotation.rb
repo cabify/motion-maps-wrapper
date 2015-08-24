@@ -18,7 +18,9 @@ class MapAnnotation
 
                 # Google
                 :info_window_view,
-                :info_contents_view
+                :info_contents_view,
+                :info_window_anchor,
+                :ground_anchor
 
   def initialize(opts = {})
     @point = Point.new
@@ -53,6 +55,8 @@ class MapAnnotation
       marker.title = self.title
       marker.appearAnimation = KGMSMarkerAnimationPop if self.animated
       marker.icon = self.image
+      marker.infoWindowAnchor = self.info_window_anchor if self.info_window_anchor
+      marker.groundAnchor = self.ground_anchor if self.ground_anchor
       marker
     end
   end
