@@ -184,7 +184,7 @@ class GoogleMap
   def enabled=(enabled)
     return enabled if @enabled == enabled
 
-    view.userInteractionEnabled = enabled
+    view.settings.allGesturesEnabled = enabled
 
     @enabled = enabled
   end
