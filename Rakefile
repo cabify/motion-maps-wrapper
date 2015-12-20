@@ -19,7 +19,7 @@ Motion::Project::App.setup do |app|
   app.deployment_target = '7.0'
 
   app.pods do
-    pod 'Google-Maps-iOS-SDK'
+    pod 'GoogleMaps'
   end
 end
 
