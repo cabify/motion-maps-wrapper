@@ -55,6 +55,9 @@ class GoogleMap
 
   def select_annotation(annotation)
     self.view.selectedMarker = annotation.GMSMarker
+    if delegate && delegate.respond_to?('did_select_annotation')
+      delegate.did_select_annotation(annotation)
+    end
   end
 
   def deselect_annotation(annotation)
@@ -74,6 +77,21 @@ class GoogleMap
 
   def mapView(mapView, markerInfoContents:marker)
     marker.info_contents_view if marker.respond_to?("info_contents_view")
+  end
+
+  def mapView(mapView, didTapMarker:marker)
+    if delegate && delegate.respond_to?('did_select_annotation')
+      annotation = self.annotations.find { |a| a.GMSMarker == marker }
+      delegate.did_select_annotation(annotation)
+    end
+    false # let map continue with its default selection behavior
+  end
+
+  def mapView(mapView, didCloseInfoWindowOfMarker:marker)
+    if delegate && delegate.respond_to?('did_deselect_annotation')
+      annotation = self.annotations.find { |a| a.GMSMarker == marker }
+      delegate.did_deselect_annotation(annotation)
+    end
   end
 
   ##################

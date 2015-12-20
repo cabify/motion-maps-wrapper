@@ -102,6 +102,18 @@ class AppleMap
     annotation_view
   end
 
+  def mapView(mapView, didDeselectAnnotationView:annotation_view)
+    if delegate && delegate.respond_to?('did_deselect_annotation')
+      delegate.did_deselect_annotation(annotation_view.annotation)
+    end
+  end
+
+  def mapView(mapView, didSelectAnnotationView:annotation_view)
+    if delegate && delegate.respond_to?('did_select_annotation')
+      delegate.did_select_annotation(annotation_view.annotation)
+    end
+  end
+
   ##################
   #### Position ####
   ##################

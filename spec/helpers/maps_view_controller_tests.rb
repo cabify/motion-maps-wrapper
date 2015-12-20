@@ -24,7 +24,6 @@ def add_shared_maps_specs(instance)
         ]
 
         controller.map.add_annotations(@annotations)
-        controller.map.select_annotation(@annotations.first)
       end
 
       after do
@@ -40,13 +39,42 @@ def add_shared_maps_specs(instance)
         controller.map.annotations.count.should == 0
       end
 
-     it "can select annotations" do
-        controller.map.selected_annotations.include?(@annotations.first).should == true
+      it "can select annotations" do
+        @delegate.mock!(:did_select_annotation) do |annotation|
+          annotation.should == @annotations.first
+          resume
+        end
+
+        Dispatch::Queue.main.after(0.1) {
+          controller.map.select_annotation(@annotations.first)
+          controller.map.center(@annotations.first.point)
+          controller.map.selected_annotations.include?(@annotations.first).should == true
+        }
+
+        wait_max 2 {
+          @delegate.reset(:did_select_annotation)
+        }
       end
 
       it "can deselect annotations" do
-        controller.map.deselect_annotation(@annotations.first)
-        controller.map.selected_annotations.count.should == 0
+        controller.map.select_annotation(@annotations.first)
+        controller.map.center(@annotations.first.point)
+
+        @delegate.mock!(:did_deselect_annotation) do |annotation|
+          annotation.should == @annotations.first
+          resume
+        end
+
+        Dispatch::Queue.main.after(0.1) {
+          controller.map.deselect_annotation(@annotations.first)
+          controller.map.selected_annotations.count.should == 0
+        }
+
+        wait_max 2 {
+          # FIXME
+          @delegate.metaclass.send(:remove_method, :did_deselect_annotation)
+          # @delegate.reset(:did_deselect_annotation)
+        }
       end
     end
 
