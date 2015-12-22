@@ -20,6 +20,7 @@ Motion::Project::App.setup do |app|
 
   app.pods do
     pod 'GoogleMaps'
+    pod 'SDWebImage'
   end
 end
 
