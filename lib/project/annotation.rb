@@ -41,7 +41,7 @@ class MapAnnotation
   def setCoordinate(coordinate)
     willChangeValueForKey("coordinate")
     self.point.set(coordinate)
-    @GMSMarker.position = coordinate if @GMSMarker
+    @GMSMarker.position = point.asCLPoint if @GMSMarker
     didChangeValueForKey("coordinate")
   end
 
