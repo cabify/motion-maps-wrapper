@@ -46,7 +46,7 @@ class MapAnnotation
   end
 
   def point=(point)
-    @point.set(point)
+    setCoordinate(point)
   end
 
   def GMSMarker
