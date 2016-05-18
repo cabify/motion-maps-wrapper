@@ -21,7 +21,8 @@ class MapAnnotation
                 :info_window_view,
                 :info_contents_view,
                 :info_window_anchor,
-                :ground_anchor
+                :ground_anchor,
+                :tappable
 
   def initialize(opts = {})
     @point = Point.new
@@ -67,6 +68,7 @@ class MapAnnotation
       end
       marker.infoWindowAnchor = self.info_window_anchor if self.info_window_anchor
       marker.groundAnchor = self.ground_anchor if self.ground_anchor
+      marker.tappable = self.tappable.nil? ? true : self.tappable
       marker
     end
   end
