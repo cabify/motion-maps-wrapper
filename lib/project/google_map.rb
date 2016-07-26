@@ -218,7 +218,7 @@ class GoogleMap
   def maps_logo_view
     settings_view = self.view.subviews.find { |v| v.is_a?(GMSUISettingsView) }
     return nil if !settings_view
-    settings_view.subviews.find { |v| v.is_a?(UIButton) && v.accessibilityLabel == "Google Maps" }
+    settings_view.subviews.find { |v| v.is_a?(UIButton) && v.accessibilityLabel.include?("Google") }
   end
 
 end
