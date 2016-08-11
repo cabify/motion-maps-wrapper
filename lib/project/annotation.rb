@@ -57,14 +57,13 @@ class MapAnnotation
       marker.snippet = self.subtitle
       marker.title = self.title
       marker.appearAnimation = KGMSMarkerAnimationPop if self.animated
+      marker.icon = self.image
       if self.image_url
         url = NSURL.URLWithString(image_url)
         SDWebImageManager.sharedManager.downloadWithURL(url, options:SDWebImageRetryFailed,
           progress:nil, completed: proc do |image, error, cached, finished|
             marker.icon = image if finished
           end)
-      else
-        marker.icon = self.image
       end
       marker.infoWindowAnchor = self.info_window_anchor if self.info_window_anchor
       marker.groundAnchor = self.ground_anchor if self.ground_anchor
