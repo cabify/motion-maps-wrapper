@@ -27,7 +27,6 @@ class MapAnnotation
   def initialize(opts = {})
     @point = Point.new
     set(opts)
-    marker
   end
 
   def set(opts)
@@ -43,7 +42,7 @@ class MapAnnotation
   def setCoordinate(coordinate)
     willChangeValueForKey("coordinate")
     self.point.set(coordinate)
-    marker.position = point.asCLPoint
+    marker.position = point.asCLPoint if @GMSMarker
     didChangeValueForKey("coordinate")
   end
 
@@ -76,7 +75,7 @@ class MapAnnotation
 
   def image=(image)
     marker.icon = image
-    @image = image
+    @image = image if @GMSMarker
   end
 
   def mapView=(mapView)
