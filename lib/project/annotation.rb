@@ -74,8 +74,8 @@ class MapAnnotation
   end
 
   def image=(image)
-    marker.icon = image
-    @image = image if @GMSMarker
+    marker.icon = image if @GMSMarker
+    @image = image
   end
 
   def mapView=(mapView)
