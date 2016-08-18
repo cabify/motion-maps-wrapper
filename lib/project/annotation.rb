@@ -27,6 +27,7 @@ class MapAnnotation
   def initialize(opts = {})
     @point = Point.new
     set(opts)
+    marker
   end
 
   def set(opts)
@@ -42,43 +43,44 @@ class MapAnnotation
   def setCoordinate(coordinate)
     willChangeValueForKey("coordinate")
     self.point.set(coordinate)
-    @GMSMarker.position = point.asCLPoint if @GMSMarker
+    marker.position = point.asCLPoint
     didChangeValueForKey("coordinate")
   end
 
   def point=(point)
-    setCoordinate(point)
+    self.point.set(point)
     self.point
   end
 
-  def GMSMarker
+  def marker
     @GMSMarker ||= begin
-      marker = GMSMarker.markerWithPosition(coordinate)
-      marker.snippet = self.subtitle
-      marker.title = self.title
-      marker.appearAnimation = KGMSMarkerAnimationPop if self.animated
-      marker.icon = self.image
+      _marker = GMSMarker.markerWithPosition(coordinate)
+      _marker.snippet = self.subtitle
+      _marker.title = self.title
+      _marker.appearAnimation = KGMSMarkerAnimationPop if self.animated
+      _marker.icon = self.image
+      _marker.position = point.asCLPoint
       if self.image_url
         url = NSURL.URLWithString(image_url)
         SDWebImageManager.sharedManager.downloadWithURL(url, options:SDWebImageRetryFailed,
           progress:nil, completed: proc do |image, error, cached, finished|
-            marker.icon = image if finished
+            _marker.icon = image if finished
           end)
       end
-      marker.infoWindowAnchor = self.info_window_anchor if self.info_window_anchor
-      marker.groundAnchor = self.ground_anchor if self.ground_anchor
-      marker.tappable = self.tappable.nil? ? true : self.tappable
-      marker
+      _marker.infoWindowAnchor = self.info_window_anchor if self.info_window_anchor
+      _marker.groundAnchor = self.ground_anchor if self.ground_anchor
+      _marker.tappable = self.tappable.nil? ? true : self.tappable
+      _marker
     end
   end
 
   def image=(image)
-    @GMSMarker.icon = image if @GMSMarker
+    marker.icon = image
     @image = image
   end
 
   def mapView=(mapView)
-    self.GMSMarker.map = mapView
+    marker.map = mapView
   end
 
 end

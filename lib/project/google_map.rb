@@ -50,11 +50,11 @@ class GoogleMap
 
   def selected_annotations
     # Google maps can only have one marker selected at the same time
-    [self.annotations.find { |a| a.GMSMarker == self.view.selectedMarker }].compact
+    [self.annotations.find { |a| a.marker == self.view.selectedMarker }].compact
   end
 
   def select_annotation(annotation)
-    self.view.selectedMarker = annotation.GMSMarker
+    self.view.selectedMarker = annotation.marker
     if delegate && delegate.respond_to?('did_select_annotation')
       delegate.did_select_annotation(annotation)
     end
@@ -71,7 +71,7 @@ class GoogleMap
   end
 
   def mapView(mapView, markerInfoWindow:marker)
-    annotation = self.annotations.find { |a| a.GMSMarker == marker }
+    annotation = self.annotations.find { |a| a.marker == marker }
     annotation.info_window_view if annotation.respond_to?("info_window_view")
   end
 
@@ -81,7 +81,7 @@ class GoogleMap
 
   def mapView(mapView, didTapMarker:marker)
     if delegate && delegate.respond_to?('did_select_annotation')
-      annotation = self.annotations.find { |a| a.GMSMarker == marker }
+      annotation = self.annotations.find { |a| a.marker == marker }
       delegate.did_select_annotation(annotation)
     end
     false # let map continue with its default selection behavior
@@ -89,7 +89,7 @@ class GoogleMap
 
   def mapView(mapView, didCloseInfoWindowOfMarker:marker)
     if delegate && delegate.respond_to?('did_deselect_annotation')
-      annotation = self.annotations.find { |a| a.GMSMarker == marker }
+      annotation = self.annotations.find { |a| a.marker == marker }
       delegate.did_deselect_annotation(annotation)
     end
   end
