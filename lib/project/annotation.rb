@@ -48,6 +48,7 @@ class MapAnnotation
 
   def point=(point)
     self.point.set(point)
+    setCoordinate(point) if @GMSMarker
     self.point
   end
 
