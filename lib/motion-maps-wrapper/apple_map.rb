@@ -87,11 +87,8 @@ class AppleMap
       if annotation.image || annotation.image_url
         annotation_class = annotation.view_class || MKAnnotationView
         annotation_view = annotation_class.alloc.initWithAnnotation(annotation, reuseIdentifier:identifier)
-        if annotation.image
-          annotation_view.image = annotation.image
-        elsif annotation.image_url
-          annotation_view.sd_setImageWithURL(NSURL.URLWithString(annotation.image_url))
-        end
+        annotation_view.image = annotation.image if annotation.image
+        annotation_view.sd_setImageWithURL(NSURL.URLWithString(annotation.image_url)) if annotation.image_url
       else
         annotation_view = MKPinAnnotationView.alloc.initWithAnnotation(annotation, reuseIdentifier:identifier)
         annotation_view.animatesDrop = annotation.animated

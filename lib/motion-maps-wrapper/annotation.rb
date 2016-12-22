@@ -70,7 +70,7 @@ class MapAnnotation
           url = NSURL.URLWithString(image_url)
           SDWebImageManager.sharedManager.downloadWithURL(url, options:SDWebImageRetryFailed,
                                                           progress:nil, completed: proc do |image, error, cached, finished|
-            _marker.icon = image if finished
+            _marker.icon = image if finished && image
           end)
         end
         _marker.infoWindowAnchor = self.info_window_anchor if self.info_window_anchor
