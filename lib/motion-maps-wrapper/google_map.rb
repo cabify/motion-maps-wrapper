@@ -82,7 +82,7 @@ class GoogleMap
   def mapView(mapView, didTapMarker:marker)
     if delegate && delegate.respond_to?('did_select_annotation')
       annotation = self.annotations.find { |a| a.marker == marker }
-      delegate.did_select_annotation(annotation)
+      return !!delegate.did_select_annotation(annotation)
     end
     false # let map continue with its default selection behavior
   end
